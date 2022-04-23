@@ -7,12 +7,12 @@ exports.getroute = void 0;
 const express_1 = __importDefault(require("express"));
 const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
+const utils_1 = require("./utils");
 exports.getroute = express_1.default.Router();
-const storage_path = 'public/storage/';
 exports.getroute.get('/:path?', (req, res) => {
     if (req.params.path) {
         let urlpath = req.params.path.split('+');
-        let fullpath = path_1.default.resolve(__dirname, '../../' + storage_path + urlpath.join('/'));
+        let fullpath = path_1.default.resolve(__dirname, utils_1.storage_path + urlpath.join('/'));
         fs_1.default.stat(fullpath, (err, stat) => {
             if (err) {
                 console.log(err);
@@ -23,8 +23,7 @@ exports.getroute.get('/:path?', (req, res) => {
                         if (err)
                             console.log(err);
                         else {
-                            // TODO(fonsi): log downloaded files on server,
-                            // or just do general logging
+                            console.log(`FILE: ${fullpath} downloaded`);
                         }
                     });
                 }
@@ -55,7 +54,7 @@ exports.getroute.get('/:path?', (req, res) => {
         });
     }
     else {
-        let fullpath = path_1.default.resolve(__dirname, '../../' + storage_path);
+        let fullpath = path_1.default.resolve(__dirname, utils_1.storage_path);
         fs_1.default.readdir(fullpath, (err, files) => {
             if (err)
                 console.log(err);

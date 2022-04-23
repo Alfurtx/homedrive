@@ -8,9 +8,9 @@ const express_1 = __importDefault(require("express"));
 const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
 const express_fileupload_1 = __importDefault(require("express-fileupload"));
+const utils_1 = require("./utils");
 exports.postroute = express_1.default.Router();
 exports.postroute.use((0, express_fileupload_1.default)());
-const storage_path = '../../public/storage/';
 /*
  * FLAGS: d or f
  * d -> is directory
@@ -22,7 +22,7 @@ exports.postroute.post('/:path?/:flags', (req, res) => {
         urlpath = req.params.path.split('+').join('/');
     else
         urlpath = '';
-    let fullpath = path_1.default.resolve(__dirname, storage_path + urlpath);
+    let fullpath = path_1.default.resolve(__dirname, utils_1.storage_path + urlpath);
     if (req.params.flags === 'd') {
         if (!fs_1.default.existsSync(fullpath)) {
             fs_1.default.mkdirSync(fullpath, { recursive: true });

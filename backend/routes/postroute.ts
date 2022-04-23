@@ -2,11 +2,11 @@ import express from 'express'
 import fs from 'fs'
 import path from 'path'
 import fileupload from 'express-fileupload'
+import { storage_path } from './utils'
 
 export const postroute = express.Router()
 
 postroute.use(fileupload())
-const storage_path = '../../public/storage/'
 
 /*
  * FLAGS: d or f

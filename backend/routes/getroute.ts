@@ -1,10 +1,9 @@
 import express from 'express'
 import fs from 'fs'
 import path from 'path'
+import { storage_path } from './utils'
 
 export const getroute = express.Router()
-
-const storage_path = '../../public/storage/'
 
 getroute.get('/:path?', (req, res) => {
     if(req.params.path) {
@@ -21,8 +20,7 @@ getroute.get('/:path?', (req, res) => {
                         if(err)
                             console.log(err)
                         else {
-                            // TODO(fonsi): log downloaded files on server,
-                            // or just do general logging
+                            console.log(`FILE: ${fullpath} downloaded`)
                         }
                     })
                 }
@@ -55,7 +53,7 @@ getroute.get('/:path?', (req, res) => {
 
 
     } else {
-        let fullpath = path.resolve(__dirname, '../../' + storage_path)
+        let fullpath = path.resolve(__dirname, storage_path)
         fs.readdir(fullpath, (err, files) => {
             if(err)
                 console.log(err)

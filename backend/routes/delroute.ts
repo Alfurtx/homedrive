@@ -1,10 +1,9 @@
 import express from 'express'
 import fs from 'fs'
 import path from 'path'
+import { storage_path } from './utils'
 
 export const delroute = express.Router()
-
-const storage_path = '../../public/storage/'
 
 delroute.delete('/:path?', (req, res) => {
     let fullpath: string;
