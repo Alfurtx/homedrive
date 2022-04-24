@@ -15,7 +15,7 @@ postroute.use(fileupload())
  */
 
 postroute.post('/:path?/:flags', (req, res) => {
-
+    console.log(`POST REQ => \npath: ${req.params.path}\nflags: ${req.params.flags}\n=====`)
     let urlpath
 
     if(req.params.path)
@@ -43,7 +43,8 @@ postroute.post('/:path?/:flags', (req, res) => {
         }
 
         files.forEach(file => {
-            file.mv(fullpath.concat('/', file.name), (err) => {
+            console.log(file)
+            file.mv(fullpath, (err) => {
                 if(err)
                     console.log(err)
             })

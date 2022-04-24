@@ -17,6 +17,7 @@ exports.postroute.use((0, express_fileupload_1.default)());
  * f -> is file
  */
 exports.postroute.post('/:path?/:flags', (req, res) => {
+    console.log(`POST REQ => \npath: ${req.params.path}\nflags: ${req.params.flags}\n=====`);
     let urlpath;
     if (req.params.path)
         urlpath = req.params.path.split('+').join('/');
@@ -39,7 +40,8 @@ exports.postroute.post('/:path?/:flags', (req, res) => {
             files = Array.of(files);
         }
         files.forEach(file => {
-            file.mv(fullpath.concat('/', file.name), (err) => {
+            console.log(file);
+            file.mv(fullpath, (err) => {
                 if (err)
                     console.log(err);
             });

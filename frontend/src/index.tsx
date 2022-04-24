@@ -43,7 +43,7 @@ function FolderCard(props: {
     if(props.isfather) {
       axios.get(base_url + 'parent/' + props.path + props.foldername)
       .then((res) => {
-        if(props.path != "") {
+        if(props.path !== "") {
           props.setpath(res.data)
         }
       })
@@ -83,7 +83,7 @@ function FileCard(props: { filename: string, path: string }) {
   let iconextensions = ['png', 'jpg', 'svg']
   let filepath = props.path + props.filename
 
-  if(props.path != "")
+  if(props.path !== "")
     filepath = props.path + '+' + props.filename
 
   function download_file() {
@@ -113,46 +113,91 @@ function FileCard(props: { filename: string, path: string }) {
   )
 }
 
-// function FileUploader() {
-//   const [file, setfile] = useState()
-//
-//   function onchange(event) {
-//     setfile(event.target.files[0])
-//   }
-//
-//   const onsubmit = () => {
-//     const formdata = new FormData()
-//     formdata.append("fileinput", file)
-//     axios.post(base_url + 'post/' + file.name)
-//       .then(null)
-//     .catch((err) => console.log(err))
-//   }
-//
-//   return(
-//     <div>
-//       <form>
-//         <input type="file" onChange={onchange}/>
-//         <Button onClick={onsubmit}>SUBMIT</Button>
-//       </form>
-//     </div>
-//   )
-// }
+function UploadFilesCard(props: { path: string }) {
+  const [files, setfiles] = useState<FileList>()
+
+  function onchange(event: React.ChangeEvent<HTMLInputElement>) {
+    if(event.target.files)
+      setfiles(event.target.files)
+  }
+
+  function onsubmit(_event: React.FormEvent) {
+    if(files) {
+      let realpath = props.path
+      if(props.path !== "") {
+        realpath = props.path + '+'
+      }
+
+
+      for(let i = 0; i < files.length; i++) {
+        const formdata = new FormData()
+        formdata.append('fileinput', files[i])
+        axios.post(base_url + 'post/' + realpath + files[i].name + '/f', formdata)
+        .then(res => console.log(res))
+        .catch(err => console.log(err))
+      }
+    }
+  }
+
+  return(
+    <Card sx={{ bgcolor: 'green', color: 'white'}}>
+      <CardContent>
+        <form onSubmit={onsubmit}>
+          <input type="file" name="fileinput" multiple onChange={onchange}/>
+          <input type="submit" value="UPLOAD"/>
+        </form>
+      </CardContent>
+    </Card>
+  )
+}
+
+function MakeDirCard(props: { path: string }) {
+  const [name, setname] = useState("")
+
+  function onchange(event: React.ChangeEvent<HTMLInputElement>) {
+    setname(event.target.value)
+  }
+  function onsubmit(_event: React.FormEvent) {
+    if(name !== "") {
+      let realpath = props.path
+      if(props.path !== "")
+        realpath = props.path + '+'
+
+      axios.post(base_url + 'post/' + realpath + name + '/d')
+      .then(null)
+      .catch(err => console.error(err))
+    }
+  }
+
+  return(
+    <Card sx={{ bgcolor: 'green', color: 'white'}}>
+      <CardContent>
+        <form onSubmit={onsubmit}>
+          <input type="text" onChange={onchange}/>
+          <input type="submit" value="CREATE DIR"/>
+        </form>
+      </CardContent>
+    </Card>
+  )
+}
 
 function FileList() {
   const [data, setdata] = useState({folders: [], files: []})
   const [path, setpath] = useState(currentpath)
 
   axios.get(base_url + 'get/' + path)
-    .then((res) => {
-      setdata(res.data)
-      console.log(res.data)
-    })
-    .catch((err) => { console.log(err) })
+  .then((res) => {
+    setdata(res.data)
+  })
+  .catch((err) => { console.log(err) })
+
 
   // if (!data) return "NO DATA"
 
   return(
   <Stack spacing={2}>
+      <UploadFilesCard path={path}/>
+      <MakeDirCard path={path}/>
       {
         path === "" ?
         <div/> :
